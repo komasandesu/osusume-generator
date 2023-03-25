@@ -1,0 +1,14 @@
+version: "3.9"
+services:
+  front:
+    build: .
+    container_name: node
+    volumes:
+      - ./app:/app
+    working_dir: /app
+    ports:
+      - 3000:3000
+    tty: true
+    stdin_open: true
+    environment:
+      - CHOKIDAR_USEPOLLING=true
