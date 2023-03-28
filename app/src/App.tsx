@@ -2,15 +2,14 @@ import React, { useEffect, useRef, useState } from 'react';
 import osusume from './images/osusume2.png'
 import seikin from './images/SEIKIN1.png'
 
-const width = 800;
-const height = 800;
+const width = 400;
+const height = 400;
 
 function App() {
   const [png, setPng] = useState<string | null>(null);
   const [text1, setText1] = useState<string>('SEIKIN');
   const [text2, setText2] = useState<string>('セイキン');
 
-  const [img, setImg] = useState<string>(seikin);
 
   const image2 = new Image();
   image2.src = seikin;
@@ -37,22 +36,32 @@ function App() {
         image.src = osusume;
         image.onload = () => {
           ctx!.drawImage(image, 0, 0, width, height);
-          ctx!.drawImage(image2, 135, 120, 310, 310);
+          
+          ctx!.save();
 
-          const size = 150-(10*(text1.length));
-          const font1 = "bold "+String(size)+"px 'MS Pゴシック'";
+          ctx!.beginPath();
+          ctx!.arc(145, 137, 100, 0, 2*Math.PI, false);
+          ctx!.clip();
+          ctx!.drawImage(image2, 45, 38, 200, 200);
+          
+          ctx!.restore();
+
+          const size1 = 74-(4.8*(text1.length));
+          const font1 = "bold "+String(size1)+"px 'MS Pゴシック'";
     
           ctx!.font = font1;
           ctx!.textAlign = 'center';
           ctx!.textBaseline = 'middle';
           ctx!.fillStyle = '#000000';
-          ctx!.fillText(text1, 570, 480);
+          ctx!.fillText(text1, 285, 240);
 
-          ctx!.font = "bold 50px 'MS Pゴシック'";
+          const size2 = 26-(2*(Math.max(4,text2.length)-4));
+          const font2 = "bold "+String(size2)+"px 'MS Pゴシック'";
+          ctx!.font = font2;
           ctx!.textAlign = 'center';
           ctx!.textBaseline = 'middle';
           ctx!.fillStyle = '#000000';
-          ctx!.fillText(text2+'が', 600, 380);
+          ctx!.fillText(text2+'が', 300, 190);
         
           setPng(canvasElem.toDataURL());
         };
@@ -65,25 +74,28 @@ function App() {
     image.src = osusume;
     image.onload = () => {
       ctx!.drawImage(image, 0, 0, width, height);
+      ctx!.drawImage(image2, 50, 45, 188, 188);
       
-      ctx!.drawImage(image2, 135, 120, 310, 310);
 
-      const size = 150-(10*(text1.length));
-      const font1 = "bold "+String(size)+"px 'MS Pゴシック'";
+      const size1 = 74-(4.8*(text1.length));
+      const font1 = "bold "+String(size1)+"px 'MS Pゴシック'";
 
       ctx!.font = font1;
       ctx!.textAlign = 'center';
       ctx!.textBaseline = 'middle';
       ctx!.fillStyle = '#000000';
-      ctx!.fillText(text1, 570, 480);
+      ctx!.fillText(text1, 285, 240);
 
-      ctx!.font = "bold 50px 'MS Pゴシック'";
+      const size2 = 26-(2*(Math.max(4,text2.length)-4));
+      const font2 = "bold "+String(size2)+"px 'MS Pゴシック'";
+      ctx!.font = font2;
       ctx!.textAlign = 'center';
       ctx!.textBaseline = 'middle';
       ctx!.fillStyle = '#000000';
-      ctx!.fillText(text2+'が', 600, 380);
+      ctx!.fillText(text2+'が', 300, 190);
       setPng(canvasElem.toDataURL());
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [text1,text2]);
 
   const handleTextChange1 = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -94,16 +106,9 @@ function App() {
     setText2(e.target.value);
   };
 
-  const handleImgChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setImg(e.target.value);
-  };
-
   return (
     <div>
       <h3>SEIKINがおすすめ!</h3>
-      <div>
-        <input type="file" accept="image/*" ref={fileInputRef} onChange={handleFileInputChange} />
-      </div>
 
       <div>
         <label>テキスト1: </label>
@@ -114,11 +119,17 @@ function App() {
         <input type="text" value={text2} onChange={handleTextChange2} />
       </div>
 
+      <div>
+        <input type="file" accept="image/*" ref={fileInputRef} onChange={handleFileInputChange} />
+      </div>
+
       {png && (
         <div className="comp" style={{ display: 'flex' }}>
-          <img alt="icon" src={png} />
+          <img alt="osusume" src={png} />
         </div>
       )}
+
+    <p>テキストを変更すると画像が変更されちゃう…</p>
     </div>
   )
 }
